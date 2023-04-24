@@ -1,9 +1,9 @@
 project:
-  id: heewonk-bunker
+  id: meta-sanctum-341404
 destroy: true
 env:
   name: dev
-owner: heewonk
+owner: reolee
 team: pso-japac
 bucket:
   lifecycle:
@@ -12,7 +12,7 @@ bucket:
   uniform: true
 instance:
   machineType: n1-standard-1
-  zone: us-west1-a
-  region: us-west1
+  zone: us-central1-a
+  region: us-central1
   image: debian-cloud/debian-11
 version: 1
