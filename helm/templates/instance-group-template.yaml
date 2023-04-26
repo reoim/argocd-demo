@@ -60,6 +60,9 @@ metadata:
     team: {{ .Values.team }}
   name: "{{ .Values.app.name }}-instance-template-{{ .Values.version }}"
 spec:
+  tags:
+  - http-server
+  - https-server
   region: {{ .Values.instance.region }}
   machineType: {{ .Values.instance.machineType }}
   metadataStartupScript: "#! /bin/bash\nnohup java -jar /home/reolee/spring-petclinic/target/*.jar &"
