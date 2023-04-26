@@ -32,17 +32,14 @@ spec:
       fixed: 3
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeHTTPHealthCheck
+kind: ComputeHealthCheck
 metadata:
   name: "{{ .Values.app.name }}-healthcheck"
 spec:
   checkIntervalSec: 10
-  description: example HTTP health check
-  healthyThreshold: 2
-  port: 8080
-  requestPath: /
-  timeoutSec: 5
-  unhealthyThreshold: 2
+  httpHealthCheck:
+    port: 8080
+  location: global
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeInstanceTemplate
