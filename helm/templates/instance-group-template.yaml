@@ -8,21 +8,21 @@ metadata:
     environment: {{ .Values.env.name }}
     owner: {{ .Values.owner }}
     team: {{ .Values.team }}
-  name: "{{ .Values.project.id }}-{{ .Release.Name }}-instance-group"
+  name: "{{ .Values.app.name }}-instance-group"
 spec:
   projectRef:
     external: "projects/{{ .Values.project.id }}"
   location: {{ .Values.instance.region }}
   namedPorts:
   - name: http
-    port: 80
+    port: 8080
   autoHealingPolicies:
     - healthCheckRef:
-        name: "{{ .Values.project.id }}-{{ .Release.Name }}-healthcheck"
+        name: "{{ .Values.app.name }}-healthcheck"
       initialDelaySec: 300
   targetSize: 3
   instanceTemplateRef:
-    name: "{{ .Values.project.id }}-{{ .Release.Name }}-instance-template-{{ .Values.version }}"
+    name: "{{ .Values.app.name }}-instance-template-{{ .Values.version }}"
   updatePolicy:
     instanceRedistributionType: PROACTIVE
     minimalAction: RESTART
@@ -32,20 +32,17 @@ spec:
       fixed: 3
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeHealthCheck
+kind: ComputeHTTPHealthCheck
 metadata:
-  annotations:
-    cnrm.cloud.google.com/project-id: {{ .Values.project.id }}
-    cnrm.cloud.google.com/force-destroy: "{{ .Values.destroy }}"
-  labels:
-    environment: {{ .Values.env.name }}
-    owner: {{ .Values.owner }}
-    team: {{ .Values.team }}
-  name: "{{ .Values.project.id }}-{{ .Release.Name }}-healthcheck"
+  name: "{{ .Values.app.name }}-healthcheck"
 spec:
-  httpHealthCheck:
-    port: 80
-  location: global
+  checkIntervalSec: 10
+  description: example HTTP health check
+  healthyThreshold: 2
+  port: 8080
+  requestPath: /
+  timeoutSec: 5
+  unhealthyThreshold: 2
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeInstanceTemplate
@@ -57,11 +54,11 @@ metadata:
     environment: {{ .Values.env.name }}
     owner: {{ .Values.owner }}
     team: {{ .Values.team }}
-  name: "{{ .Values.project.id }}-{{ .Release.Name }}-instance-template-{{ .Values.version }}"
+  name: "{{ .Values.app.name }}-instance-template-{{ .Values.version }}"
 spec:
   region: {{ .Values.instance.region }}
   machineType: {{ .Values.instance.machineType }}
-  metadataStartupScript: apt-get install apache2 -y
+  metadataStartupScript: "#! /bin/bash\nnohup java -jar /home/reolee/spring-petclinic/target/*.jar &"
   disk:
   - sourceImageRef:
       external: {{ .Values.instance.image }}

@@ -14,5 +14,7 @@ instance:
   machineType: n1-standard-1
   zone: us-central1-a
   region: us-central1
-  image: debian-cloud/debian-11
+  image: petclinic-img-1
 version: 1
+app:
+  name: petclinic
