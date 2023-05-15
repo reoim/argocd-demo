@@ -20,16 +20,11 @@ spec:
     - healthCheckRef:
         name: "{{ .Values.app.name }}-healthcheck"
       initialDelaySec: 300
-  targetSize: 3
+  targetSize: 10
   instanceTemplateRef:
     name: "{{ .Values.app.name }}-instance-template-{{ .Values.version }}"
   updatePolicy:
     instanceRedistributionType: PROACTIVE
-    minimalAction: RESTART
-    maxSurge:
-      fixed: 3
-    maxUnavailable:
-      fixed: 3
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeHealthCheck
